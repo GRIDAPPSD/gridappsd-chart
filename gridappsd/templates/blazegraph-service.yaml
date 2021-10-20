@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.24.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: blazegraph
+  name: blazegraph
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 31889
+      protocol: TCP
+  selector:
+    io.kompose.service: blazegraph
+#status:
+  #loadBalancer: {}

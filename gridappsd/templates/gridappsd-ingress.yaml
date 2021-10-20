@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.service.expose: "true"
+    kompose.service.type: nodeport
+    kompose.version: 1.24.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: gridappsd
+  name: gridappsd
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: gridappsd
+              servicePort: 61613
+status:
+  loadBalancer: {}
