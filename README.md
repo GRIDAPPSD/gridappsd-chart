@@ -26,3 +26,7 @@ pkill kubectl
 
 minikube stop
 ```
+
+## Need platform updates to get communications
+  * in goss-gridapps-d if the variable PROVEN_ENDPOINT is defined use the variable version, if not then use http://localhost:18080
+  * may also need for blazegraph
