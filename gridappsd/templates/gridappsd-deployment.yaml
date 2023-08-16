@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gridappsd
   annotations:
     kompose.cmd: kompose convert -c
     kompose.service.expose: "true"
