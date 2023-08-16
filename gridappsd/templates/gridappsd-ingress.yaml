@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -14,8 +14,12 @@ spec:
   rules:
     - http:
         paths:
-          - backend:
-              serviceName: gridappsd
-              servicePort: 61613
+        - path: /testpath
+          pathType: Prefix
+          backend:
+            service:
+              name: gridappsd
+              port:
+                number: 61613
 status:
   loadBalancer: {}

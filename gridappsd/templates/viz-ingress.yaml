@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -14,8 +14,12 @@ spec:
   rules:
     - http:
         paths:
-          - backend:
-              serviceName: viz
-              servicePort: 8080
+          - path: /testpath
+            pathType: Prefix
+            backend:
+              service:
+                name: viz
+                port:
+                  number: 8080
 status:
   loadBalancer: {}
