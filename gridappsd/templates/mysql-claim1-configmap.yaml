@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mysql-claim1
+  name: {{ include "gripaddsd.fullname" . }}-mysql-claim1
 data:
   schema.sql: |
     CREATE DATABASE gridappsd;

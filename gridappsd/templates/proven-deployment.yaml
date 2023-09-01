@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: proven
-  name: proven
+  name: {{ include "gripaddsd.fullname" . }}-proven
 spec:
   replicas: 1
   selector:

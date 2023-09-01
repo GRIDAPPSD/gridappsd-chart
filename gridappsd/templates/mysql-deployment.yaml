@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: mysql
-  name: mysql
+  name: {{ include "gripaddsd.fullname" . }}-mysql
 spec:
   replicas: 1
   selector:
@@ -44,8 +44,8 @@ spec:
       volumes:
         - name: mysql-claim0
           persistentVolumeClaim:
-            claimName: mysql-claim0
+            claimName: {{ include "gripaddsd.fullname" . }}-mysql-claim0
         - name: mysql-claim1
           configMap:
-            name: mysql-claim1
+            name: {{ include "gripaddsd.fullname" . }}-mysql-claim1
 status: {}

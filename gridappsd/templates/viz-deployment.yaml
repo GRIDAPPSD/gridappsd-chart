@@ -9,7 +9,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: viz
-  name: viz
+  name: {{ include "gripaddsd.fullname" . }}-viz
 spec:
   replicas: 1
   selector:
