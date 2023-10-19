@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: influxdb
-  name: {{ include "gripaddsd.fullname" . }}-influxdb
+  name: {{ include "gridappsd.fullname" . }}-influxdb
 spec:
   ports:
     - name: "8086"

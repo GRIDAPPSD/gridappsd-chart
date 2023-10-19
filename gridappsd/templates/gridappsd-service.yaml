@@ -9,7 +9,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: gridappsd
-  name: {{ include "gripaddsd.fullname" . }}-gridappsd
+  name: {{ include "gridappsd.fullname" . }}-gridappsd
 spec:
   ports:
     - name: "61613"

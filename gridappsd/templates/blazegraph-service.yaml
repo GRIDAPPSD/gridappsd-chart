@@ -7,13 +7,16 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: blazegraph
-  name: {{ include "gripaddsd.fullname" . }}-blazegraph
+  name: {{ include "gridappsd.fullname" . }}-blazegraph
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 8080
-      nodePort: 31889
+      targetPort: 8080
       protocol: TCP
+    # - port: 8080
+    #   nodePort: 31889
+    #   protocol: TCP
   selector:
     io.kompose.service: blazegraph
 #status:

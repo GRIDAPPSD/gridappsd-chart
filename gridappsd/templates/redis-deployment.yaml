@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: redis
-  name: {{ include "gripaddsd.fullname" . }}-redis
+  name: {{ include "gridappsd.fullname" . }}-redis
 spec:
   replicas: 1
   selector:
@@ -41,5 +41,5 @@ spec:
       volumes:
         - name: redis-claim0
           persistentVolumeClaim:
-            claimName: {{ include "gripaddsd.fullname" . }}-redis-claim0
+            claimName: {{ include "gridappsd.fullname" . }}-redis-claim0
 status: {}

@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: sample-app
-  name: {{ include "gripaddsd.fullname" . }}-sample-app
+  name: {{ include "gridappsd.fullname" . }}-sample-app
 spec:
   replicas: 1
   selector:

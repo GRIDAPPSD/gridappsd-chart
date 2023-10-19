@@ -9,7 +9,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: viz
-  name: {{ include "gripaddsd.fullname" . }}-viz
+  name: {{ include "gridappsd.fullname" . }}-viz
 spec:
   ports:
     - name: "8080"

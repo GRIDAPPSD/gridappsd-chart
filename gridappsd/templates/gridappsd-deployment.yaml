@@ -1,3 +1,4 @@
+{{- $fullName := include "gridappsd.fullname" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,7 +10,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: gridappsd
-  name: {{ include "gripaddsd.fullname" . }}-gridappsd
+  name: {{ $fullName }}-gridappsd
 spec:
   replicas: 1
   selector:
@@ -66,5 +67,13 @@ spec:
             - containerPort: 8888
           resources: {}
           workingDir: /gridappsd
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gripadds/conf/pnnl.goss.gridappsd.cfg
+              subPath: pnnl.goss.gridappsd.cfg
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ $fullName }}-gridappsd-config
       restartPolicy: Always
 status: {}
