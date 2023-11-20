@@ -1,6 +1,6 @@
 {{- if .Values.gridappsd.ingress.enabled -}}
 {{- $fullName := include "gridappsd.fullname" . -}}
-{{- $svcPort := .Values.gridappsd.service.port -}}
+{{- $svcPort := .Values.gridappsd.service.websockets.port -}}
 {{- if and .Values.gridappsd.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.gridappsd.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.gridappsd.ingress.annotations "kubernetes.io/ingress.class" .Values.gridappsd.ingress.className}}
