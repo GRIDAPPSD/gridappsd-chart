@@ -1,8 +1,8 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "gridappsd.name" -}}
-{{- default .Chart.Name .Values.gridappsd.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "influxdb.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -10,11 +10,11 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "gridappsd.fullname" -}}
-{{- if .Values.gridappsd.fullnameOverride }}
-{{- .Values.gridappsd.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "influxdb.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.gridappsd.nameOverride }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "gridappsd.chart" -}}
+{{- define "influxdb.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "gridappsd.labels" -}}
-helm.sh/chart: {{ include "gridappsd.chart" . }}
-{{ include "gridappsd.selectorLabels" . }}
+{{- define "influxdb.labels" -}}
+helm.sh/chart: {{ include "influxdb.chart" . }}
+{{ include "influxdb.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,18 +45,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "gridappsd.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "gridappsd.name" . }}
+{{- define "influxdb.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "influxdb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "gridappsd.serviceAccountName" -}}
-{{- if .Values.gridappsd.serviceAccount.create }}
-{{- default (include "gridappsd.fullname" .) .Values.gridappsd.serviceAccount.name }}
+{{- define "influxdb.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "influxdb.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.gridappsd.serviceAccount.name }}
+{{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}

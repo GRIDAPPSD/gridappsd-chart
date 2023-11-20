@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "viz.fullname" . }}-config
+data:
+  config.json: |
+    {
+      "version": "v2023.07.0",
+      "host": "{{ .Values.config.gridappsdUrl }}"
+    }

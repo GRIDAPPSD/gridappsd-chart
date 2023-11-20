@@ -9,13 +9,13 @@ minikube start
 
 helm install gridappsd gridappsd/
 
-kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-viz) 8080:8082 &
-kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-gridappsd) 61613:61613 &
-kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-gridappsd) 61614:61614 &
-kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-influxdb) 8086:8086 &
-kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-proven) 18080:8080 &
+kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-platform-viz) 8080:8080 &
+kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-platform-gridappsd) 61613:61613 &
+kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-platform-gridappsd) 61614:61614 &
+kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-platform-influxdb) 8086:8086 &
+kubectl port-forward $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-platform-proven) 18080:8080 &
 
-kubectl exec --stdin --tty $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-gridappsd) -- /bin/bash
+kubectl exec --stdin --tty $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gridappsd-platform-gridappsd) -- /bin/bash
 
 helm upgrade gridappsd gridappsd/
 

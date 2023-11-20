@@ -1,21 +1,6 @@
 apiVersion: v2
-name: gridappsd
+name: proven
 description: A Helm chart for Kubernetes
-dependencies:
-- name: blazegraph
-  version: ~0.1.0
-- name: influxdb
-  version: ~0.1.0
-- name: proven
-  version: ~0.1.0
-- name: viz
-  version: ~0.1.0
-- name: mysql
-  version: ~9.14.1
-  repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-- name: redis
-  version: ~18.1.6
-  repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -37,4 +22,3 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: 0.1.0
-

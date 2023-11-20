@@ -1,0 +1,215 @@
+###########################
+### GridappsD Component ###
+###########################
+gridappsd:
+  config:
+    autostart: true
+    debug: true
+
+  replicaCount: 1
+
+  image:
+    repository: gridappsd/gridappsd
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: develop
+
+  imagePullSecrets: []
+  nameOverride: gridappsd
+  fullnameOverride: gridappsd-platform-gridappsd
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Automatically mount a ServiceAccount's API credentials?
+    automount: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+  podLabels: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    stomp:
+      port: 61613
+    websockets:
+      port: 61614
+    openwire:
+      port: 61616
+    jdwp: 
+      port: 8000
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # Additional volumes on the output Deployment definition.
+  volumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+
+############################
+### Blazegraph Component ###
+############################
+blazegraph:
+  fullnameOverride: gridappsd-platform-blazegraph
+  service:
+    port: 8080
+
+
+##########################
+### InfluxDB Component ###
+##########################
+influxdb:
+  fullnameOverride: gridappsd-platform-influxdb
+  service:
+    port: 8086
+
+
+########################
+### Proven Component ###
+########################
+proven:
+  fullnameOverride: gridappsd-platform-proven
+  service:
+    port: 8080
+  influxdb:
+    enabled: true
+    url: http://gridappsd-platform-influxdb:8086
+
+
+#####################
+### Viz Component ###
+#####################
+viz:
+  fullnameOverride: gridappsd-platform-viz
+  gridappsdConnectionUrl: gridappsd-platform-gridappsd:61614
+
+
+#######################
+### MySQL Component ###
+#######################
+mysql:
+  fullnameOverride: gridappsd-platform-mysql
+  primary:
+    service:
+      ports:
+        mysql: 3306
+  image:
+    pullPolicy: Always
+    repository: mysql/mysql-server
+    tag: 5.7
+  auth:
+    username: gridappsd
+    password: gridappsd1234
+    database: gridappsd
+    rootPassword: Jo8T2c9TQP=$
+  initdbScripts:
+    schema.sql: |
+      USE gridappsd;
+      DROP TABLE IF EXISTS `log`;
+      CREATE TABLE `log` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `source` varchar(255) NOT NULL,
+        `process_id` varchar(255) DEFAULT NULL,
+        `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `log_message` TEXT NOT NULL,
+        `log_level` varchar(20) NOT NULL,
+        `process_status` varchar(20) NOT NULL,
+        `username` varchar(20) NOT NULL,
+        `process_type` varchar(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='This table contain log messages and status from variaous processes in gridappsd platform.';
+      DROP TABLE IF EXISTS `expected_results`;
+      CREATE TABLE `expected_results` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `app_id` varchar(255) DEFAULT NULL,
+        `test_id` varchar(255) DEFAULT NULL,
+        `process_id_one` varchar(255) DEFAULT NULL,
+        `process_id_two` varchar(255) DEFAULT NULL,
+        `index_one` LONG DEFAULT NULL,
+        `index_two` LONG DEFAULT NULL,
+        `mrid` varchar(255) NOT NULL,
+        `property` varchar(255) NOT NULL,
+        `expected` varchar(255) NOT NULL,
+        `actual` varchar(255)  NOT NULL,
+        `difference_direction` varchar(255) NOT NULL,
+        `difference_mrid` varchar(255)  NOT NULL,
+        `match_flag` BOOL NOT NULL,
+        `simulation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='This table contains messages for expected results';
+
+
+#######################
+### Redis Component ###
+#######################
+redis:
+  architecture: standalone
+  auth:
+    enabled: false
+  image:
+    pullPolicy: Always
+    repository: redis
+    tag: 3.2.11
