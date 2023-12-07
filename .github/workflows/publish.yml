@@ -1,7 +1,8 @@
 # Before secret.GITHUB_TOKEN will work you must
 # 1. Publish the chart manually usinag a personal token with package write permissions
 # 2. Grant the repository write permissions as per instructions here - https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-a-registry-using-a-personal-access-token
-# #. Configure Github actions with read/write permissions for the repository - https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository
+# 3. Configure Github actions with read/write permissions for the repository - https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository
+# 4. Ensure the package associated with the chart is publicly visible - https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#configuring-visibility-of-packages-for-an-organization
 name: publish gridappsd chart
 
 on:
