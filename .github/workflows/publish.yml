@@ -1,0 +1,37 @@
+# Before secret.GITHUB_TOKEN will work you must
+# 1. Publish the chart manually usinag a personal token with package write permissions
+# 2. Grant the repository write permissions as per instructions here - https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-a-registry-using-a-personal-access-token
+# 3. Configure Github actions with read/write permissions for the repository - https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository
+# 4. Ensure the package associated with the chart is publicly visible - https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#configuring-visibility-of-packages-for-an-organization
+name: publish gridappsd chart
+
+on:
+  pull_request:
+    types:
+    - closed
+    branches:
+    - main
+
+env:
+  GCR_IMAGE: ghcr.io/${{ github.repository_owner }}/gridappsd
+
+jobs:
+  build:
+    name: publish chart
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@v2
+        name: checkout repo
+      - name: install helm
+        uses: Azure/setup-helm@v1
+      - name: login to gcr using helm
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ${{ env.GCR_IMAGE }} --username ${{ github.repository_owner }} --password-stdin
+      - name: save helm chart to local registry
+        run: |
+          helm chart save ${{ github.workspace }}/gridappsd/ ${{ env.GCR_IMAGE }}:${{ github.sha }}
+      - name: publish chart to gcr
+        run: |
+          helm chart push ${{ env.GCR_IMAGE }}:${{ github.sha }}
+      

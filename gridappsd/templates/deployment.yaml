@@ -1,0 +1,128 @@
+{{- $fullName := include "gridappsd.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "gridappsd.labels" . | nindent 4 }}
+    app.kubernetes.io/component: gridappsd
+spec:
+  {{- if not .Values.gridappsd.autoscaling.enabled }}
+  replicas: {{ .Values.gridappsd.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gridappsd.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: gridappsd
+  template:
+    metadata:
+      {{- with .Values.gridappsd.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gridappsd.labels" . | nindent 8 }}
+        app.kubernetes.io/component: gridappsd
+	{{- with .Values.gridappsd.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.gridappsd.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "gridappsd.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.gridappsd.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.gridappsd.securityContext | nindent 12 }}
+          image: "{{ .Values.gridappsd.image.repository }}:{{ .Values.gridappsd.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.gridappsd.image.pullPolicy }}
+          env:
+            {{- if .Values.gridappsd.config.autostart }}
+            - name: AUTOSTART
+              value: "1"
+            {{- end }}
+            {{- if .Values.gridappsd.config.debug }}
+            - name: DEBUG
+              value: "1"
+            {{- end }}
+            - name: LD_LIBRARY_PATH
+              value: /usr/local/lib64
+            - name: PATH
+              value: /gridappsd/bin:/gridappsd/lib:/gridappsd/services/fncsgossbridge/service:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+          ports:
+            - name: stomp
+              containerPort: {{ .Values.gridappsd.service.stomp.port }}
+              protocol: TCP
+            - name: websockets
+              containerPort: {{ .Values.gridappsd.service.websockets.port }}
+              protocol: TCP
+            - name: openwire
+              containerPort: {{ .Values.gridappsd.service.openwire.port }}
+              protocol: TCP
+            - name: jdwp
+              containerPort: {{ .Values.gridappsd.service.jdwp.port }}
+              protocol: TCP
+            - containerPort: 20000
+            - containerPort: 20001
+            - containerPort: 20002
+            - containerPort: 20003
+            - containerPort: 20004
+            - containerPort: 20005
+            - containerPort: 20006
+            - containerPort: 20007
+            - containerPort: 20008
+            - containerPort: 20009
+            - containerPort: 20010
+            - containerPort: 20011
+            - containerPort: 20012
+            - containerPort: 20013
+            - containerPort: 20014
+            - containerPort: 20015
+            - containerPort: 20016
+            - containerPort: 20017
+            - containerPort: 20018
+            - containerPort: 20019
+            - containerPort: 20020
+          livenessProbe:
+            initialDelaySeconds: 15
+            tcpSocket:
+              port: {{ .Values.gridappsd.service.stomp.port }}
+          readinessProbe:
+            initialDelaySeconds: 15
+            tcpSocket:
+              port: {{ .Values.gridappsd.service.stomp.port }}
+          resources:
+            {{- toYaml .Values.gridappsd.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gridappsd/conf/pnnl.goss.gridappsd.cfg
+              subPath: pnnl.goss.gridappsd.cfg
+            - name: config-volume
+              mountPath: /gridappsd/conf/pnnl.goss.sql.datasource.gridappsd.cfg
+              subPath: pnnl.goss.sql.datasource.gridappsd.cfg
+          {{- with .Values.gridappsd.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ $fullName }}-config
+      {{- with .Values.gridappsd.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gridappsd.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gridappsd.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gridappsd.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

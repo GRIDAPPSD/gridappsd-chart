@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gridappsd.fullname" . }}
+  labels:
+    {{- include "gridappsd.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.gridappsd.service.type }}
+  ports:
+    - port: {{ .Values.gridappsd.service.stomp.port }}
+      targetPort: {{ .Values.gridappsd.service.stomp.port }}
+      protocol: TCP
+      name: stomp
+    - port: {{ .Values.gridappsd.service.websockets.port }}
+      targetPort: {{ .Values.gridappsd.service.websockets.port }}
+      protocol: TCP
+      name: websockets
+    - port: {{ .Values.gridappsd.service.openwire.port }}
+      targetPort: {{ .Values.gridappsd.service.openwire.port }}
+      protocol: TCP
+      name: openwire
+    - port: {{ .Values.gridappsd.service.jdwp.port }}
+      targetPort: {{ .Values.gridappsd.service.jdwp.port }}
+      protocol: TCP
+      name: jdwp
+  selector:
+    {{- include "gridappsd.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: gridappsd

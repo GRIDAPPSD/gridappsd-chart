@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gridappsd.fullname" . }}-config
+  labels:
+    {{- include "gridappsd.labels" . | nindent 4 }}
+data:
+  pnnl.goss.sql.datasource.gridappsd.cfg: |
+    # For the powergrid all datasources that have a name that starts with powergrid
+    # will be interrogated for powergrids.
+
+    # The name that can be returned from the datasource registry handler.
+    # Required
+    name=gridappsd
+
+    # A username to access the database
+    # Required
+    username={{ .Values.mysql.auth.username }}
+    password={{ .Values.mysql.auth.password }}
+
+    # A jdbc or other url string to be require to connect to the database
+    # Required
+    # Uses the container named  mysql to connect to.
+    url=jdbc:mysql://{{ .Values.mysql.fullnameOverride }}:{{ .Values.mysql.primary.service.ports.mysql }}/{{ .Values.mysql.auth.database }}
+    #url=jdbc:mysql://localhost:3306/gridappsd
+
+    # The class to use to create the datasource (Note this class must be available
+    # through osgi in order to use it).
+    # Optional - Defaults to com.mysql.jdbc.Driver
+    driver=com.mysql.jdbc.Driver
+  pnnl.goss.gridappsd.cfg: |
+    fncs.path = fncs_broker
+    gridlabd.path = gridlabd.sh
+    gridappsd.temp.path = /tmp/gridappsd_tmp
+    fncs.bridge.path = ./scripts/goss_fncs_bridge.py
+    applications.path = /gridappsd/applications
+    services.path = /gridappsd/services
+    # Requires no / 
+    blazegraph.ns.path = http://localhost:8889/bigdata/namespace/kb/sparql
+
+    # Uses docker composed blazegraph host here.  Note this is not the
+    # external address, but from inside one of the containers on the
+    # docker-compose default network.
+    blazegraph.host.path = http://{{ .Values.blazegraph.fullnameOverride }}:{{ .Values.blazegraph.service.port }}/bigdata/namespace/kb/sparql
+
+    # Deprecated original path
+    # Uses docker composed proven host here.  Note this is not the
+    # external address, but from inside one of the containers on the
+    # docker-compose default network.
+    proven.path = http://{{ .Values.proven.fullnameOverride }}:{{ .Values.proven.service.port }}/hybrid/rest/v1/repository/provenMessage
+
+    # Uses docker composed proven host here.  Note this is not the
+    # external address, but from inside one of the containers on the
+    # docker-compose default network.
+    proven.write.path = http://{{ .Values.proven.fullnameOverride }}:{{ .Values.proven.service.port }}/hybrid/rest/v1/repository/addBulkTimeSeries
+
+    # Uses docker composed proven host here.  Note this is not the
+    # external address, but from inside one of the containers on the
+    # docker-compose default network.
+    proven.query.path = http://{{ .Values.proven.fullnameOverride }}:{{ .Values.proven.service.port }}/hybrid/rest/v1/repository/provenMessage
+
+    # Uses docker composed proven host here.  Note this is not the
+    # external address, but from inside one of the containers on the
+    # docker-compose default network.
+    proven.advanced_query.path = http://{{ .Values.proven.fullnameOverride }}:{{ .Values.proven.service.port }}/hybrid/rest/v1/repository/getAdvancedTsQuery
+
+    # Power grid model MRID for deployed Field Bus
+    field.model.mrid = _49AD8E07-3BF9-A4E2-CB8F-C3722F837B62

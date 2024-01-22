@@ -1,0 +1,7 @@
+### Helm ###
+# Chart dependencies
+**/charts/*.tgz
+Chart.lock
+requirements.lock
+
+.DS_Store
